@@ -1,0 +1,16 @@
+data:
+  path: data/hosp_1/data.csv
+  target: target
+
+model:
+  name: xgboost
+  params:
+    n_estimators: 200
+    learning_rate: 0.05
+    max_depth: 4
+    subsample: 0.8
+    random_state: 42
+
+train:
+  test_size: 0.2
+  random_state: 42
