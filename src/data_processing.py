@@ -1,6 +1,6 @@
 import pandas as pd
 
-def load_data(path):
+def load_data(path: str) -> pd.DataFrame:
     """Load dataset from a CSV file"""
     try:
         data = pd.read_csv(path)
@@ -8,7 +8,6 @@ def load_data(path):
         return data
     except FileNotFoundError:
         raise FileNotFoundError(f"❌ Data file not found at {path}")
-    
 
 if __name__ == "__main__":
     df = load_data("data/hosp_1/data.csv")

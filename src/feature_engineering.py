@@ -4,9 +4,12 @@ from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from sklearn.impute import SimpleImputer
 
-def build_feature_pipeline(df: pd.DataFrame):
-    numeric_features = df.select_dtypes(include=["int64", "float64"]).columns.tolist()
-    categorical_features = df.select_dtypes(include=["object", "category", "bool"]).columns.tolist()
+def build_feature_pipeline(df: pd.DataFrame, target_col: str):
+    X = df.drop(columns=[target_col])
+    y = df[target_col]
+
+    numeric_features = X.select_dtypes(include=["int64", "float64"]).columns.tolist()
+    categorical_features = X.select_dtypes(include=["object", "category", "bool"]).columns.tolist()
 
     numeric_transformer = Pipeline(steps=[
         ("imputer", SimpleImputer(strategy="mean")),
@@ -23,4 +26,5 @@ def build_feature_pipeline(df: pd.DataFrame):
         ("cat", categorical_transformer, categorical_features)
     ])
 
-    return preprocessor
+    X_processed = preprocessor.fit_transform(X)
+    return X_processed, y
