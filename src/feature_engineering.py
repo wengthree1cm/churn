@@ -1,29 +1,31 @@
-import pandas as pd
 from sklearn.pipeline import Pipeline
-from sklearn.compose import ColumnTransformer
-from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from sklearn.impute import SimpleImputer
+from sklearn.preprocessing import OneHotEncoder, StandardScaler
+from sklearn.compose import ColumnTransformer
+import pandas as pd
 
 def build_feature_pipeline(df: pd.DataFrame, target_col: str):
+    df[target_col] = df[target_col].map({'Yes': 1, 'No': 0})  # Label encoding
+
     X = df.drop(columns=[target_col])
     y = df[target_col]
 
-    numeric_features = X.select_dtypes(include=["int64", "float64"]).columns.tolist()
-    categorical_features = X.select_dtypes(include=["object", "category", "bool"]).columns.tolist()
+    numeric_cols = X.select_dtypes(include=['int64', 'float64']).columns.tolist()
+    categorical_cols = X.select_dtypes(include=['object', 'bool']).columns.tolist()
 
-    numeric_transformer = Pipeline(steps=[
-        ("imputer", SimpleImputer(strategy="mean")),
-        ("scaler", StandardScaler())
+    numeric_pipeline = Pipeline([
+        ('imputer', SimpleImputer(strategy='mean')),
+        ('scaler', StandardScaler())
     ])
 
-    categorical_transformer = Pipeline(steps=[
-        ("imputer", SimpleImputer(strategy="most_frequent")),
-        ("onehot", OneHotEncoder(handle_unknown="ignore", sparse_output=False))
+    categorical_pipeline = Pipeline([
+        ('imputer', SimpleImputer(strategy='most_frequent')),
+        ('onehot', OneHotEncoder(handle_unknown='ignore'))
     ])
 
-    preprocessor = ColumnTransformer(transformers=[
-        ("num", numeric_transformer, numeric_features),
-        ("cat", categorical_transformer, categorical_features)
+    preprocessor = ColumnTransformer([
+        ('num', numeric_pipeline, numeric_cols),
+        ('cat', categorical_pipeline, categorical_cols)
     ])
 
     X_processed = preprocessor.fit_transform(X)
