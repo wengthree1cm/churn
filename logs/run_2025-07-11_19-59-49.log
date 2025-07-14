@@ -1,0 +1,7 @@
+2025-07-11 19:59:49,124 - INFO - \U0001f680 Training pipeline started
+2025-07-11 19:59:49,163 - INFO - \u2705 Data loaded. Shape: (7043, 20)
+2025-07-11 19:59:49,234 - INFO - \u2705 Data split: Train=(5634, 6575), Test=(1409, 6575)
+2025-07-11 19:59:49,942 - INFO - \u2705 Model (xgboost) trained
+2025-07-11 19:59:49,948 - INFO - \u2705 Model saved to: models/model_xgboost_20250711_195949.joblib
+2025-07-11 19:59:50,653 - INFO - \u2705 Evaluation complete. Charts and report saved in 'reports/'
+2025-07-11 19:59:50,653 - INFO - \U0001f3c1 Training pipeline finished successfully!

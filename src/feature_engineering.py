@@ -4,7 +4,7 @@ from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from sklearn.compose import ColumnTransformer
 import pandas as pd
 
-def build_feature_pipeline(df: pd.DataFrame, target_col: str):
+def build_feature_pipeline(df, target_col):
     df[target_col] = df[target_col].map({'Yes': 1, 'No': 0})  # Label encoding
 
     X = df.drop(columns=[target_col])
