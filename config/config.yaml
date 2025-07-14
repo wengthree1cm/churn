@@ -2,4 +2,3 @@ data_path: "data/raw/WA_Fn-UseC_-Telco-Customer-Churn.csv"
 target_col: "Churn"
 test_size: 0.2
 random_seed: 42
-model_type: "xgboost"  # 可改成 "random_forest", "logistic"

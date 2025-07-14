@@ -29,4 +29,8 @@ def build_feature_pipeline(df, target_col):
     ])
 
     X_processed = preprocessor.fit_transform(X)
-    return X_processed, y
+    feature_names = preprocessor.get_feature_names_out()
+    X_df = pd.DataFrame(X_processed.toarray() if hasattr(X_processed, 'toarray') else X_processed,
+                        columns=feature_names)
+
+    return X_df, y

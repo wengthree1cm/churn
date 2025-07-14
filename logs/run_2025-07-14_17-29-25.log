@@ -1,0 +1,11 @@
+2025-07-14 17:29:25,681 - INFO - \U0001f680 Multi-model training pipeline started
+2025-07-14 17:29:25,752 - INFO - \U0001f50d Training model: xgboost
+2025-07-14 17:29:28,809 - INFO - \u2705 Best params for xgboost: {'max_depth': 3, 'n_estimators': 50}
+2025-07-14 17:29:28,813 - INFO - \U0001f4be Saved best model to models/model_xgboost_20250714_172925.joblib
+2025-07-14 17:29:29,436 - INFO - \U0001f50d Training model: random_forest
+2025-07-14 17:30:01,201 - INFO - \u2705 Best params for random_forest: {'max_depth': None, 'n_estimators': 200}
+2025-07-14 17:30:01,297 - INFO - \U0001f4be Saved best model to models/model_random_forest_20250714_172925.joblib
+2025-07-14 17:30:02,011 - INFO - \U0001f50d Training model: logistic
+2025-07-14 17:30:02,430 - INFO - \u2705 Best params for logistic: {'C': 10.0}
+2025-07-14 17:30:02,432 - INFO - \U0001f4be Saved best model to models/model_logistic_20250714_172925.joblib
+2025-07-14 17:30:02,871 - INFO - \U0001f3c1 All models trained and evaluated successfully!

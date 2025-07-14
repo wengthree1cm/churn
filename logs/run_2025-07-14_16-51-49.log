@@ -1,0 +1,10 @@
+2025-07-14 16:51:49,268 - INFO - \U0001f680 Training pipeline started
+2025-07-14 16:51:49,303 - INFO - \u2705 Data loaded. Shape: (7043, 20)
+2025-07-14 16:51:49,358 - INFO - \u2705 Data split: Train=(5634, 6575), Test=(1409, 6575)
+2025-07-14 16:51:49,767 - INFO - \u2705 Model (xgboost) trained
+2025-07-14 16:51:49,771 - INFO - \u2705 Model saved to: models/model_xgboost_20250714_165149.joblib
+2025-07-14 16:51:49,785 - INFO - \U0001f4c4 Classification report saved
+2025-07-14 16:51:50,451 - INFO - \U0001f4ca Confusion matrix saved
+2025-07-14 16:51:50,617 - INFO - \U0001f4c8 ROC curve saved
+2025-07-14 16:51:50,776 - INFO - \U0001f4c8 Precision-Recall curve saved
+2025-07-14 16:51:50,776 - INFO - \U0001f3c1 Training pipeline finished successfully!

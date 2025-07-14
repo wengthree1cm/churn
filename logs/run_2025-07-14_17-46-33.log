@@ -1,0 +1,5 @@
+2025-07-14 17:46:33,381 - INFO - \U0001f680 Training pipeline started
+2025-07-14 17:46:33,451 - INFO - \U0001f50d Training model: xgboost
+2025-07-14 17:46:37,113 - INFO - \U0001f50d Training model: random_forest
+2025-07-14 17:47:10,057 - INFO - \U0001f50d Training model: logistic
+2025-07-14 17:47:10,857 - INFO - \U0001f50d Training model: lightgbm
