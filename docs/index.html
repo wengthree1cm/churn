@@ -3,45 +3,83 @@
 <head>
   <meta charset="UTF-8" />
   <title>Customer Churn Predictor</title>
+  <style>
+    body { font-family: Arial; margin: 2em; }
+    label, select, input, button { margin: 0.5em 0; display: block; }
+    table { border-collapse: collapse; margin-top: 1em; width: 100%; }
+    th, td { border: 1px solid #ccc; padding: 6px; text-align: center; }
+  </style>
 </head>
 <body>
-  <h1>Customer Churn Predictor</h1>
+  <h1>📊 Customer Churn Predictor</h1>
   <form id="predict-form">
-    <label>Feature 1: <input type="number" step="any" name="feature1" required></label><br>
-    <label>Feature 2: <input type="number" step="any" name="feature2" required></label><br>
-    <label>Feature 3: <input type="number" step="any" name="feature3" required></label><br>
-    <label>Model:
-      <select name="model_type">
+    <label>Upload CSV File:
+      <input type="file" id="csv-file" name="file" accept=".csv" required />
+    </label>
+
+    <label>Choose Model:
+      <select id="model-select" name="model_type">
         <option value="xgboost">XGBoost</option>
         <option value="random_forest">Random Forest</option>
-        <option value="logistic_regression">Logistic Regression</option>
+        <option value="logistic">Logistic Regression</option>
         <option value="lightgbm">LightGBM</option>
       </select>
-    </label><br>
+    </label>
+
     <button type="submit">Predict</button>
   </form>
 
-  <p id="result"></p>
+  <div id="output"></div>
 
   <script>
-    document.getElementById("predict-form").addEventListener("submit", async function (e) {
+    const form = document.getElementById("predict-form");
+    const output = document.getElementById("output");
+
+    form.addEventListener("submit", async (e) => {
       e.preventDefault();
 
-      const form = new FormData(this);
-      const data = Object.fromEntries(form.entries());
+      const fileInput = document.getElementById("csv-file");
+      const model = document.getElementById("model-select").value;
 
-      for (let key in data) {
-        if (key !== "model_type") data[key] = parseFloat(data[key]);
+      const formData = new FormData();
+      formData.append("file", fileInput.files[0]);
+      formData.append("model_type", model);
+
+      output.innerHTML = "⏳ Loading...";
+
+      try {
+        const response = await fetch("https://your-api-name.onrender.com/predict/", {
+          method: "POST",
+          body: formData
+        });
+
+        const result = await response.json();
+
+        if (result.error) {
+          output.innerHTML = `<p style="color: red;">❌ ${result.error}</p>`;
+          return;
+        }
+
+        // Render JSON as a table
+        if (Array.isArray(result) && result.length > 0) {
+          const keys = Object.keys(result[0]);
+          let table = "<table><thead><tr>";
+          keys.forEach(k => table += `<th>${k}</th>`);
+          table += "</tr></thead><tbody>";
+          result.forEach(row => {
+            table += "<tr>";
+            keys.forEach(k => table += `<td>${row[k]}</td>`);
+            table += "</tr>";
+          });
+          table += "</tbody></table>";
+          output.innerHTML = table;
+        } else {
+          output.innerHTML = "<p>No data returned.</p>";
+        }
+
+      } catch (err) {
+        output.innerHTML = `<p style="color:red;">❌ Error: ${err.message}</p>`;
       }
-
-      const response = await fetch("https://your-render-url.onrender.com/predict/", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
-      });
-
-      const result = await response.json();
-      document.getElementById("result").textContent = JSON.stringify(result);
     });
   </script>
 </body>
