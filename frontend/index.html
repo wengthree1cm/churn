@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Churn Prediction</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <h1>📊 Customer Churn Predictor</h1>
+  <form id="upload-form">
+    <label for="file">Upload CSV File:</label>
+    <input type="file" id="file" name="file" accept=".csv" required><br><br>
+
+    <label for="model">Select Model:</label>
+    <select id="model" name="model">
+      <option value="xgboost">XGBoost</option>
+      <option value="lightgbm">LightGBM</option>
+      <option value="random_forest">Random Forest</option>
+      <option value="logistic">Logistic Regression</option>
+    </select><br><br>
+
+    <button type="submit">Predict 🚀</button>
+  </form>
+
+  <h2>Result Preview</h2>
+  <div id="output"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>

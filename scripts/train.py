@@ -171,8 +171,7 @@ def main():
     )
 
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    # "xgboost", "random_forest", "logistic",
-    models_to_run = [ "lightgbm"]
+    models_to_run = [ "xgboost", "random_forest", "logistic","lightgbm"]
 
     for model_type in models_to_run:
         logger.info(f"🔍 Training model: {model_type}")
@@ -188,10 +187,12 @@ def main():
             model = model_cv.best_estimator_
             best_params = model_cv.best_params_
 
-        # Save model
+        # Save model (overwrite with fixed name)
         os.makedirs("models", exist_ok=True)
-        model_path = f"models/model_{model_type}_{timestamp}.joblib"
+        model_path = f"models/model_{model_type}.joblib"
         joblib.dump(model, model_path)
+        logger.info(f"✅ Saved model: {model_path}")
+
 
         # Save reports
         report_dir = os.path.join("reports", timestamp, model_type)
