@@ -10,7 +10,7 @@ app = FastAPI(title="Customer Churn Prediction API")
 # 允许跨域（重要！）
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://wengthree1cm.github.io"],  # 或者改成 GitHub Pages 的 URL 更安全
+    allow_origins=["https://wengthree1cm.github.io/churn"],  # 或者改成 GitHub Pages 的 URL 更安全
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

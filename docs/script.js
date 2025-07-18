@@ -7,7 +7,7 @@ document.getElementById("upload-form").addEventListener("submit", async (e) => {
   formData.append("file", fileInput.files[0]);
   formData.append("model_type", modelInput.value);
 
-  const response = await fetch("https://churn-prediction-udq1.onrender.com/predict/", {
+  const response = await fetch("https://churn-prediction-udq1.onrender.com/predict", {
     method: "POST",
     body: formData
   });
