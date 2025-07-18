@@ -1,8 +1,7 @@
 import pandas as pd
 
-def load_data(path: str) -> pd.DataFrame:
-    df = pd.read_csv(path)
-    # 删除 customerID，如果存在
-    if 'customerID' in df.columns:
-        df = df.drop(columns=['customerID'])
+def load_data(df):
+    df = df.copy()
+    if "customerID" in df.columns:
+        df.drop(columns=["customerID"], inplace=True)
     return df

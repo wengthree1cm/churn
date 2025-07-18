@@ -48,7 +48,7 @@ async def predict_churn(file: UploadFile = File(...), model_type: str = Form(...
 
     try:
         df = load_data(df)
-        X, _ = build_feature_pipeline(df, target_col="Churn")  # ✅ 这里改成 X, _ 而不是 df, _
+        X, _ = build_feature_pipeline(df, target_col="Churn")
     except Exception as e:
         return {"error": f"Preprocessing failed: {str(e)}"}
 
@@ -58,7 +58,7 @@ async def predict_churn(file: UploadFile = File(...), model_type: str = Form(...
         return {"error": f"Failed to load model: {str(e)}"}
 
     try:
-        predictions = model.predict(X)  # ✅ 用处理后的 X
+        predictions = model.predict(X)
         return {"predictions": predictions.tolist()}
     except Exception as e:
         return {"error": f"Prediction failed: {str(e)}"}
