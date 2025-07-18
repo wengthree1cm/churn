@@ -1,8 +1,6 @@
 venv/
 *.egg-info/
 __pycache__/
-models/
-models/
 logs/
 reports/
 
