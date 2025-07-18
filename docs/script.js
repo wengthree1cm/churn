@@ -1,4 +1,4 @@
-document.getElementById("upload-form").addEventListener("submit", async (e) => {
+document.getElementById("predict-form").addEventListener("submit", async (e) => {
   e.preventDefault();
 
   const fileInput = document.getElementById("file");
