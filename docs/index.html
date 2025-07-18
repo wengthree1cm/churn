@@ -48,9 +48,9 @@
       output.innerHTML = "⏳ Loading...";
 
       try {
-        const response = await fetch("https://your-api-name.onrender.com/predict/", {
-          method: "POST",
-          body: formData
+        const response = await fetch("https://churn-prediction-udql.onrender.com/predict/", {
+        method: "POST",
+        body: formData,
         });
 
         const result = await response.json();

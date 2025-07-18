@@ -1,37 +1,51 @@
-# app/main.py
-from fastapi import FastAPI
-from pydantic import BaseModel
+from fastapi import FastAPI, UploadFile, File, Form
+from fastapi.middleware.cors import CORSMiddleware
+import pandas as pd
 import joblib
 import os
+import io
 
 app = FastAPI(title="Customer Churn Prediction API")
 
-# 加载模型路径
+# 允许跨域（重要！）
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # 或者改成 GitHub Pages 的 URL 更安全
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# 模型路径
 MODEL_PATHS = {
     "xgboost": "models/xgboost_model.pkl",
     "random_forest": "models/random_forest_model.pkl",
-    "logistic_regression": "models/logistic_regression_model.pkl",
+    "logistic": "models/logistic_regression_model.pkl",
     "lightgbm": "models/lightgbm_model.pkl"
 }
-
-# 定义输入数据
-class CustomerInput(BaseModel):
-    feature1: float
-    feature2: float
-    feature3: float
-    model_type: str  # "xgboost", "random_forest", "logistic_regression", "lightgbm"
 
 @app.get("/")
 def read_root():
     return {"message": "Welcome to Customer Churn Prediction API!"}
 
 @app.post("/predict/")
-def predict_churn(data: CustomerInput):
-    model_type = data.model_type.lower()
+async def predict_churn(file: UploadFile = File(...), model_type: str = Form(...)):
+    # 验证模型
+    model_type = model_type.lower()
     if model_type not in MODEL_PATHS:
         return {"error": f"Invalid model type: {model_type}"}
     
+    # 读取上传的 CSV 文件为 DataFrame
+    contents = await file.read()
+    df = pd.read_csv(io.StringIO(contents.decode("utf-8")))
+
+    # 加载模型并预测
     model = joblib.load(MODEL_PATHS[model_type])
-    features = [[data.feature1, data.feature2, data.feature3]]
-    prediction = model.predict(features)[0]
-    return {"prediction": int(prediction)}
+    try:
+        preds = model.predict(df)
+    except Exception as e:
+        return {"error": f"Prediction failed: {str(e)}"}
+    
+    # 拼结果
+    df["prediction"] = preds
+    return df.to_dict(orient="records")
