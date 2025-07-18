@@ -11,10 +11,8 @@ import io
 from data_processing import load_data
 from feature_engineering import build_feature_pipeline
 
-# FastAPI 实例
 app = FastAPI(title="Customer Churn Prediction API")
 
-# 允许前端跨域访问（GitHub Pages）
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
@@ -26,7 +24,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# 模型路径配置（保持 models 文件夹不变）
 MODEL_PATHS = {
     "xgboost": "models/model_xgboost.joblib",
     "random_forest": "models/model_random_forest.joblib",
@@ -44,27 +41,22 @@ async def predict_churn(file: UploadFile = File(...), model_type: str = Form(...
     if model_type not in MODEL_PATHS:
         return {"error": f"Invalid model type: {model_type}"}
 
-    # 读取 CSV 文件
     try:
         df = pd.read_csv(io.BytesIO(await file.read()))
     except Exception as e:
         return {"error": f"Failed to read uploaded file: {str(e)}"}
 
-    # 清洗 + 特征工程（如你已有这些模块）
     try:
         df = load_data(df)
-        df = build_feature_pipeline(df)
+        df, _ = build_feature_pipeline(df, target_col="Churn")
     except Exception as e:
         return {"error": f"Preprocessing failed: {str(e)}"}
 
-    # 载入模型
     try:
-        model_path = MODEL_PATHS[model_type]
-        model = joblib.load(model_path)
+        model = joblib.load(MODEL_PATHS[model_type])
     except Exception as e:
         return {"error": f"Failed to load model: {str(e)}"}
 
-    # 预测
     try:
         predictions = model.predict(df)
         return {"predictions": predictions.tolist()}
