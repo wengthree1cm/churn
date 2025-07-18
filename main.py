@@ -21,10 +21,10 @@ app.add_middleware(
 
 # 模型路径
 MODEL_PATHS = {
-    "xgboost": "models/xgboost_model.pkl",
-    "random_forest": "models/random_forest_model.pkl",
-    "logistic": "models/logistic_regression_model.pkl",
-    "lightgbm": "models/lightgbm_model.pkl"
+    "xgboost": "models/model_xgboost.joblib",
+    "random_forest": "models/model_random_forest.joblib",
+    "logistic": "models/model_logistic.joblib",
+    "lightgbm": "models/model_lightgbm.joblib"
 }
 
 @app.get("/")
