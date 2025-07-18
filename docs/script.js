@@ -19,15 +19,28 @@ document.getElementById("upload-form").addEventListener("submit", async (e) => {
   try {
     const response = await fetch("https://churn-prediction-udq1.onrender.com/predict", {
       method: "POST",
-      body: formData
+      body: formData,
+      headers: {
+        // 必须去掉 Content-Type，浏览器会自动设置 multipart/form-data boundary
+        // "Content-Type": "multipart/form-data" ❌ 不能手动加这个
+      },
     });
 
+    const rawText = await response.text(); // 获取原始返回文本
+    console.log("Raw Response:", rawText); // 👉 打印原始返回内容用于调试
+
     if (!response.ok) {
-      throw new Error(`Server responded with status ${response.status}`);
+      throw new Error(`Server responded with status ${response.status}: ${rawText}`);
     }
 
-    const result = await response.json();
-    outputDiv.innerHTML = "";  // Clear loading text
+    let result;
+    try {
+      result = JSON.parse(rawText);  // 手动解析 JSON，避免格式问题抛错
+    } catch (parseErr) {
+      throw new Error(`Failed to parse JSON response: ${parseErr.message}`);
+    }
+
+    outputDiv.innerHTML = ""; // 清除 loading 信息
 
     if (result.error) {
       outputDiv.innerHTML = `<p style="color:red">⚠️ ${result.error}</p>`;
@@ -42,7 +55,7 @@ document.getElementById("upload-form").addEventListener("submit", async (e) => {
       table += "</tbody></table>";
       outputDiv.innerHTML = table;
     } else {
-      outputDiv.innerHTML = "<p>No predictions returned.</p>";
+      outputDiv.innerHTML = "<p style='color:red'>❗No predictions returned.</p>";
     }
 
   } catch (error) {
