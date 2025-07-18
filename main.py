@@ -4,7 +4,7 @@ import pandas as pd
 import joblib
 import os
 import io
-
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 app = FastAPI(title="Customer Churn Prediction API")
 
 # ✅ 修正后的 CORS 设置
@@ -21,10 +21,10 @@ app.add_middleware(
 
 # 模型路径
 MODEL_PATHS = {
-    "xgboost": "models/model_xgboost.joblib",
-    "random_forest": "models/model_random_forest.joblib",
-    "logistic": "models/model_logistic.joblib",
-    "lightgbm": "models/model_lightgbm.joblib"
+    "xgboost": os.path.join(BASE_DIR, "models", "model_xgboost.joblib"),
+    "random_forest": os.path.join(BASE_DIR, "models", "model_random_forest.joblib"),
+    "logistic": os.path.join(BASE_DIR, "models", "model_logistic.joblib"),
+    "lightgbm": os.path.join(BASE_DIR, "models", "model_lightgbm.joblib"),
 }
 
 @app.get("/")
