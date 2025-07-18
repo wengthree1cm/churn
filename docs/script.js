@@ -1,65 +1,56 @@
-document.getElementById("predict-form").addEventListener("submit", async (e) => {
-  e.preventDefault();
+document.addEventListener("DOMContentLoaded", () => {
+  const form = document.getElementById("predict-form");
+  const output = document.getElementById("output");
 
-  const fileInput = document.getElementById("file");
-  const modelInput = document.getElementById("model");
-  const outputDiv = document.getElementById("output");
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-  outputDiv.innerHTML = "⏳ Uploading file and predicting...";
+    const fileInput = document.getElementById("csv-file");
+    const model = document.getElementById("model-select").value;
 
-  if (!fileInput.files.length) {
-    outputDiv.innerHTML = `<p style="color:red">Please upload a CSV file.</p>`;
-    return;
-  }
-
-  const formData = new FormData();
-  formData.append("file", fileInput.files[0]);
-  formData.append("model_type", modelInput.value);
-
-  try {
-    const response = await fetch("https://churn-prediction-udq1.onrender.com/predict", {
-      method: "POST",
-      body: formData,
-      headers: {
-        // 必须去掉 Content-Type，浏览器会自动设置 multipart/form-data boundary
-        // "Content-Type": "multipart/form-data" ❌ 不能手动加这个
-      },
-    });
-
-    const rawText = await response.text(); // 获取原始返回文本
-    console.log("Raw Response:", rawText); // 👉 打印原始返回内容用于调试
-
-    if (!response.ok) {
-      throw new Error(`Server responded with status ${response.status}: ${rawText}`);
-    }
-
-    let result;
-    try {
-      result = JSON.parse(rawText);  // 手动解析 JSON，避免格式问题抛错
-    } catch (parseErr) {
-      throw new Error(`Failed to parse JSON response: ${parseErr.message}`);
-    }
-
-    outputDiv.innerHTML = ""; // 清除 loading 信息
-
-    if (result.error) {
-      outputDiv.innerHTML = `<p style="color:red">⚠️ ${result.error}</p>`;
+    if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
+      output.innerHTML = `<p style="color:red;">❌ Please upload a CSV file.</p>`;
       return;
     }
 
-    if (result.predictions && result.predictions.length > 0) {
-      let table = "<table border='1'><thead><tr><th>Prediction</th></tr></thead><tbody>";
-      result.predictions.forEach(pred => {
-        table += `<tr><td>${pred}</td></tr>`;
-      });
-      table += "</tbody></table>";
-      outputDiv.innerHTML = table;
-    } else {
-      outputDiv.innerHTML = "<p style='color:red'>❗No predictions returned.</p>";
-    }
+    const formData = new FormData();
+    formData.append("file", fileInput.files[0]);
+    formData.append("model_type", model);
 
-  } catch (error) {
-    console.error("Fetch failed:", error);
-    outputDiv.innerHTML = `<p style="color:red">❌ Fetch failed: ${error.message}</p>`;
-  }
+    output.innerHTML = "⏳ Uploading file and predicting...";
+
+    try {
+      const response = await fetch("https://churn-prediction-udq1.onrender.com/predict", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error(`Server responded with status ${response.status}`);
+      }
+
+      const result = await response.json();
+
+      if (result.error) {
+        output.innerHTML = `<p style="color: red;">❌ ${result.error}</p>`;
+        return;
+      }
+
+      // Handle list of predictions
+      if (Array.isArray(result.predictions) && result.predictions.length > 0) {
+        let table = "<table><thead><tr><th>Prediction</th></tr></thead><tbody>";
+        result.predictions.forEach(p => {
+          table += `<tr><td>${p}</td></tr>`;
+        });
+        table += "</tbody></table>";
+        output.innerHTML = table;
+      } else {
+        output.innerHTML = "<p>No data returned.</p>";
+      }
+
+    } catch (err) {
+      output.innerHTML = `<p style="color:red;">❌ Error: ${err.message}</p>`;
+      console.error("Error during fetch:", err);
+    }
+  });
 });
